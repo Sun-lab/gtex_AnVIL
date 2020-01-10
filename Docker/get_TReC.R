@@ -1,7 +1,6 @@
 
-library("GenomicAlignments")
-library("GenomicFeatures")
-library("Rsamtools")
+library(GenomicFeatures)
+library(GenomicAlignments)
 
 args = commandArgs(trailingOnly=TRUE)
 
@@ -26,19 +25,12 @@ se = summarizeOverlaps(features=genes, reads=bamfile, mode="Union",
              singleEnd=FALSE, ignore.strand=TRUE, fragments=TRUE)
 date()
 
-se
-colData(se)
-rowRanges(se)
-str(metadata(rowRanges(se)))
-
-as1 = assay(se)
-as1 = as.data.frame(as1)
+as1 = as.data.frame(assay(se))
 dim(as1)
 head(as1)
 
-write.table(as1, file = sprintf("%s_TReC.txt", fname), append = FALSE,
-  quote = FALSE, sep = "\t", eol = "\n", row.names = TRUE,
-  col.names = TRUE)
+write.table(as1, file = sprintf("%s_TReC.txt", fname), 
+  quote = FALSE, sep = "\t", eol = "\n")
 
 sessionInfo()
 q(save="no")
