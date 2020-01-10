@@ -1,0 +1,1 @@
+Rscript --vanilla get_TReC.R /Users/wsun/research/data/_GTEx/v8/RNAseq/GTEx_Analysis_2017-06-05_v8_RNAseq_BAM_files_GTEX-1117F-0426-SM-5EGHI.Aligned.sortedByCoord.out.patched.md.bam

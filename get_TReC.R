@@ -3,13 +3,21 @@ library("GenomicAlignments")
 library("GenomicFeatures")
 library("Rsamtools")
 
+args = commandArgs(trailingOnly=TRUE)
+
+if (length(args)==0) {
+  stop("At least one argument must be supplied (input file).n", call.=FALSE)
+} else {
+  fname = args[1]
+}
+
 genes = readRDS("exon_by_genes_gencode.v26.GRCh38.rds")
 
-filenames = list.files(path="~/research/data/_GTEx/v8/RNAseq", 
-                       pattern=".bam$", full.names=TRUE)
-filenames
+# filenames = list.files(path="~/research/data/_GTEx/v8/RNAseq", 
+#                        pattern=".bam$", full.names=TRUE)
+# filenames
+# fname   = filenames[1]
 
-fname   = filenames[1]
 bamfile = BamFileList(fname, yieldSize=1000000)
 bamfile
 
