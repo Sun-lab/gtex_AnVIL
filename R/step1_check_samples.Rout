@@ -1,0 +1,633 @@
+
+R version 3.5.2 (2018-12-20) -- "Eggshell Igloo"
+Copyright (C) 2018 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+> library(data.table)
+> 
+> # ------------------------------------------------------------------------
+> # read in sample information
+> # ------------------------------------------------------------------------
+> 
+> sam_file = "../data/GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt"
+> sams = fread(sam_file)
+> 
+> dim(sams)
+[1] 22951    63
+> sams[1:2,]
+                     SAMPID SMATSSCR SMCENTER SMPTHNTS SMRIN  SMTS       SMTSD
+1: GTEX-1117F-0003-SM-58Q7G       NA       B1             NA Blood Whole Blood
+2: GTEX-1117F-0003-SM-5DWSB       NA       B1             NA Blood Whole Blood
+   SMUBRID SMTSISCH SMTSPAX SMNABTCH
+1: 0013756     1188      NA BP-38516
+2: 0013756     1188      NA BP-38516
+                                            SMNABTCHT  SMNABTCHD
+1: DNA isolation_Whole Blood_QIAGEN Puregene (Manual) 05/02/2013
+2: DNA isolation_Whole Blood_QIAGEN Puregene (Manual) 05/02/2013
+           SMGEBTCH  SMGEBTCHD                          SMGEBTCHT SMAFRZE SMGTC
+1:       LCSET-4574 01/15/2014 Standard Exome Sequencing v3 (ICE)     WES      
+2: GTEx_OM25_Dec_01 01/28/2014            Illumina OMNI SNP Array    OMNI      
+   SME2MPRT SMCHMPRS SMNTRART SMNUMGPS SMMAPRT SMEXNCRT SM550NRM SMGNSDTC
+1:       NA       NA       NA       NA      NA       NA       NA       NA
+2:       NA       NA       NA       NA      NA       NA       NA       NA
+   SMUNMPRT SM350NRM SMRDLGTH SMMNCPB SME1MMRT SMSFLGTH SMESTLBS SMMPPD
+1:       NA       NA       NA      NA       NA       NA       NA     NA
+2:       NA       NA       NA      NA       NA       NA       NA     NA
+   SMNTERRT SMRRNANM SMRDTTL SMVQCFL SMMNCV SMTRSCPT SMMPPDPR SMCGLGTH SMGAPPCT
+1:       NA       NA      NA      NA     NA       NA       NA       NA       NA
+2:       NA       NA      NA      NA     NA       NA       NA       NA       NA
+   SMUNPDRD SMNTRNRT SMMPUNRT SMEXPEFF SMMPPDUN SME2MMRT SME2ANTI SMALTALG
+1:       NA       NA       NA       NA       NA       NA       NA       NA
+2:       NA       NA       NA       NA       NA       NA       NA       NA
+   SME2SNSE SMMFLGTH SME1ANTI SMSPLTRD SMBSMMRT SME1SNSE SME1PCTS SMRRNART
+1:       NA       NA       NA       NA       NA       NA       NA       NA
+2:       NA       NA       NA       NA       NA       NA       NA       NA
+   SME1MPRT SMNUM5CD SMDPMPRT SME2PCTS
+1:       NA       NA       NA       NA
+2:       NA       NA       NA       NA
+> 
+> table(sams$SMTS)
+
+ Adipose Tissue   Adrenal Gland         Bladder           Blood    Blood Vessel 
+           1327             275              21            3480            1473 
+    Bone Marrow           Brain          Breast    Cervix Uteri           Colon 
+            217            3326             480              19             821 
+      Esophagus  Fallopian Tube           Heart          Kidney           Liver 
+           1582               9            1141             104             251 
+           Lung          Muscle           Nerve           Ovary        Pancreas 
+            867            1132             722             195             360 
+      Pituitary        Prostate  Salivary Gland            Skin Small Intestine 
+            301             262             181            2014             193 
+         Spleen         Stomach          Testis         Thyroid          Uterus 
+            260             381             406             812             166 
+         Vagina 
+            173 
+> table(sams$SMTSD)
+
+                   Adipose - Subcutaneous 
+                                      763 
+             Adipose - Visceral (Omentum) 
+                                      564 
+                            Adrenal Gland 
+                                      275 
+                           Artery - Aorta 
+                                      450 
+                        Artery - Coronary 
+                                      253 
+                          Artery - Tibial 
+                                      770 
+                                  Bladder 
+                                       21 
+                         Brain - Amygdala 
+                                      177 
+ Brain - Anterior cingulate cortex (BA24) 
+                                      213 
+          Brain - Caudate (basal ganglia) 
+                                      291 
+            Brain - Cerebellar Hemisphere 
+                                      263 
+                       Brain - Cerebellum 
+                                      298 
+                           Brain - Cortex 
+                                      325 
+             Brain - Frontal Cortex (BA9) 
+                                      425 
+                      Brain - Hippocampus 
+                                      243 
+                     Brain - Hypothalamus 
+                                      236 
+Brain - Nucleus accumbens (basal ganglia) 
+                                      277 
+          Brain - Putamen (basal ganglia) 
+                                      232 
+       Brain - Spinal cord (cervical c-1) 
+                                      182 
+                 Brain - Substantia nigra 
+                                      164 
+                  Breast - Mammary Tissue 
+                                      480 
+             Cells - Cultured fibroblasts 
+                                      527 
+      Cells - EBV-transformed lymphocytes 
+                                      192 
+         Cells - Leukemia cell line (CML) 
+                                      217 
+                      Cervix - Ectocervix 
+                                        9 
+                      Cervix - Endocervix 
+                                       10 
+                          Colon - Sigmoid 
+                                      389 
+                       Colon - Transverse 
+                                      432 
+    Esophagus - Gastroesophageal Junction 
+                                      401 
+                       Esophagus - Mucosa 
+                                      622 
+                   Esophagus - Muscularis 
+                                      559 
+                           Fallopian Tube 
+                                        9 
+                 Heart - Atrial Appendage 
+                                      452 
+                   Heart - Left Ventricle 
+                                      689 
+                          Kidney - Cortex 
+                                      100 
+                         Kidney - Medulla 
+                                        4 
+                                    Liver 
+                                      251 
+                                     Lung 
+                                      867 
+                     Minor Salivary Gland 
+                                      181 
+                        Muscle - Skeletal 
+                                     1132 
+                           Nerve - Tibial 
+                                      722 
+                                    Ovary 
+                                      195 
+                                 Pancreas 
+                                      360 
+                                Pituitary 
+                                      301 
+                                 Prostate 
+                                      262 
+      Skin - Not Sun Exposed (Suprapubic) 
+                                      638 
+           Skin - Sun Exposed (Lower leg) 
+                                      849 
+         Small Intestine - Terminal Ileum 
+                                      193 
+                                   Spleen 
+                                      260 
+                                  Stomach 
+                                      381 
+                                   Testis 
+                                      406 
+                                  Thyroid 
+                                      812 
+                                   Uterus 
+                                      166 
+                                   Vagina 
+                                      173 
+                              Whole Blood 
+                                     3288 
+> table(sams$SMAFRZE)
+
+        EXCLUDE    OMNI  RNASEQ     WES     WGS 
+    602    2700     450   17382     979     838 
+> 
+> # ------------------------------------------------------------------------
+> # The samples with WGS data
+> # ------------------------------------------------------------------------
+> 
+> sams4WGS = sams$SAMPID[which(sams$SMAFRZE=="WGS")]
+> length(sams4WGS)
+[1] 838
+> length(unique(sams4WGS))
+[1] 838
+> sams4WGS[1:5]
+[1] "GTEX-1117F-0003-SM-6WBT7" "GTEX-111CU-0003-SM-6WBUD"
+[3] "GTEX-111FC-0001-SM-6WBTJ" "GTEX-111VG-0004-SM-6WBTS"
+[5] "GTEX-111YS-0004-SM-6WBTN"
+> 
+> sams4WGS = strsplit(sams4WGS, split="-")
+> table(sapply(sams4WGS, length))
+
+  5 
+838 
+> sams4WGS = sapply(sams4WGS, function(v){paste(v[1:2], collapse='-')})
+> length(unique(sams4WGS))
+[1] 838
+> sams4WGS[1:5]
+[1] "GTEX-1117F" "GTEX-111CU" "GTEX-111FC" "GTEX-111VG" "GTEX-111YS"
+> 
+> # ------------------------------------------------------------------------
+> # Compare with the samples with het SNP data
+> # ------------------------------------------------------------------------
+> 
+> hetSNPs = list.files(path="~/research/data/_GTEx/v8/WGS_VCF/het_snps/byindnid_chr")
+> length(hetSNPs)
+[1] 838
+> hetSNPs[1:5]
+[1] "GTEX-1117F.txt" "GTEX-111CU.txt" "GTEX-111FC.txt" "GTEX-111VG.txt"
+[5] "GTEX-111YS.txt"
+> 
+> hetSNPs = gsub(".txt", "", hetSNPs, fixed=TRUE)
+> hetSNPs[1:5]
+[1] "GTEX-1117F" "GTEX-111CU" "GTEX-111FC" "GTEX-111VG" "GTEX-111YS"
+> 
+> setequal(sams4WGS, hetSNPs)
+[1] TRUE
+> 
+> # ------------------------------------------------------------------------
+> # The samples with RNA-seq data
+> # ------------------------------------------------------------------------
+> 
+> sams = sams[which(sams$SMAFRZE == "RNASEQ"),]
+> dim(sams)
+[1] 17382    63
+> 
+> sams4RNA = strsplit(sams$SAMPID, split="-")
+> sams4RNA = sapply(sams4RNA, function(v){paste(v[1:2], collapse='-')})
+> 
+> table(sams4RNA %in% sams4WGS)
+
+FALSE  TRUE 
+ 2129 15253 
+> 
+> sams = sams[which(sams4RNA %in% sams4WGS),]
+> dim(sams)
+[1] 15253    63
+> 
+> t1 = table(sams$SMTSD)
+> t1
+
+                   Adipose - Subcutaneous 
+                                      581 
+             Adipose - Visceral (Omentum) 
+                                      469 
+                            Adrenal Gland 
+                                      233 
+                           Artery - Aorta 
+                                      387 
+                        Artery - Coronary 
+                                      213 
+                          Artery - Tibial 
+                                      584 
+                                  Bladder 
+                                       21 
+                         Brain - Amygdala 
+                                      129 
+ Brain - Anterior cingulate cortex (BA24) 
+                                      147 
+          Brain - Caudate (basal ganglia) 
+                                      194 
+            Brain - Cerebellar Hemisphere 
+                                      175 
+                       Brain - Cerebellum 
+                                      209 
+                           Brain - Cortex 
+                                      205 
+             Brain - Frontal Cortex (BA9) 
+                                      175 
+                      Brain - Hippocampus 
+                                      165 
+                     Brain - Hypothalamus 
+                                      170 
+Brain - Nucleus accumbens (basal ganglia) 
+                                      202 
+          Brain - Putamen (basal ganglia) 
+                                      170 
+       Brain - Spinal cord (cervical c-1) 
+                                      126 
+                 Brain - Substantia nigra 
+                                      114 
+                  Breast - Mammary Tissue 
+                                      396 
+             Cells - Cultured fibroblasts 
+                                      483 
+      Cells - EBV-transformed lymphocytes 
+                                      147 
+                      Cervix - Ectocervix 
+                                        9 
+                      Cervix - Endocervix 
+                                       10 
+                          Colon - Sigmoid 
+                                      318 
+                       Colon - Transverse 
+                                      368 
+    Esophagus - Gastroesophageal Junction 
+                                      330 
+                       Esophagus - Mucosa 
+                                      497 
+                   Esophagus - Muscularis 
+                                      465 
+                           Fallopian Tube 
+                                        8 
+                 Heart - Atrial Appendage 
+                                      372 
+                   Heart - Left Ventricle 
+                                      386 
+                          Kidney - Cortex 
+                                       73 
+                         Kidney - Medulla 
+                                        4 
+                                    Liver 
+                                      208 
+                                     Lung 
+                                      515 
+                     Minor Salivary Gland 
+                                      144 
+                        Muscle - Skeletal 
+                                      706 
+                           Nerve - Tibial 
+                                      532 
+                                    Ovary 
+                                      167 
+                                 Pancreas 
+                                      305 
+                                Pituitary 
+                                      237 
+                                 Prostate 
+                                      221 
+      Skin - Not Sun Exposed (Suprapubic) 
+                                      517 
+           Skin - Sun Exposed (Lower leg) 
+                                      605 
+         Small Intestine - Terminal Ileum 
+                                      174 
+                                   Spleen 
+                                      227 
+                                  Stomach 
+                                      324 
+                                   Testis 
+                                      322 
+                                  Thyroid 
+                                      574 
+                                   Uterus 
+                                      129 
+                                   Vagina 
+                                      141 
+                              Whole Blood 
+                                      670 
+> 
+> # ------------------------------------------------------------------------
+> # compare with the summary table from GTEx portal
+> # ------------------------------------------------------------------------
+> 
+> t0 = read.csv("../data/GTEx_Portal.csv", as.is=TRUE)
+> dim(t0)
+[1] 54  4
+> t0
+                                      Tissue      UBERON
+1                     Adipose - Subcutaneous     0002190
+2               Adipose - Visceral (Omentum)     0010414
+3                              Adrenal Gland     0002369
+4                             Artery - Aorta     0001496
+5                          Artery - Coronary     0001621
+6                            Artery - Tibial     0007610
+7                                    Bladder     0001255
+8                           Brain - Amygdala     0001876
+9   Brain - Anterior cingulate cortex (BA24)     0009835
+10           Brain - Caudate (basal ganglia)     0001873
+11             Brain - Cerebellar Hemisphere     0002037
+12                        Brain - Cerebellum     0002037
+13                            Brain - Cortex     0001870
+14              Brain - Frontal Cortex (BA9)     0009834
+15                       Brain - Hippocampus     0001954
+16                      Brain - Hypothalamus     0001898
+17 Brain - Nucleus accumbens (basal ganglia)     0001882
+18           Brain - Putamen (basal ganglia)     0001874
+19        Brain - Spinal cord (cervical c-1)     0006469
+20                  Brain - Substantia nigra     0002038
+21                   Breast - Mammary Tissue     0008367
+22              Cells - Cultured fibroblasts EFO_0002009
+23       Cells - EBV-transformed lymphocytes EFO_0000572
+24                       Cervix - Ectocervix     0012249
+25                       Cervix - Endocervix     0000458
+26                           Colon - Sigmoid     0001159
+27                        Colon - Transverse     0001157
+28     Esophagus - Gastroesophageal Junction     0004550
+29                        Esophagus - Mucosa     0006920
+30                    Esophagus - Muscularis     0004648
+31                            Fallopian Tube     0003889
+32                  Heart - Atrial Appendage     0006631
+33                    Heart - Left Ventricle     0006566
+34                           Kidney - Cortex     0001225
+35                          Kidney - Medulla     0001293
+36                                     Liver     0001114
+37                                      Lung     0008952
+38                      Minor Salivary Gland     0006330
+39                         Muscle - Skeletal     0011907
+40                            Nerve - Tibial     0001323
+41                                     Ovary     0000992
+42                                  Pancreas     0001150
+43                                 Pituitary     0000007
+44                                  Prostate     0002367
+45       Skin - Not Sun Exposed (Suprapubic)     0036149
+46            Skin - Sun Exposed (Lower leg)     0004264
+47          Small Intestine - Terminal Ileum     0001211
+48                                    Spleen     0002106
+49                                   Stomach     0000945
+50                                    Testis     0000473
+51                                   Thyroid     0002046
+52                                    Uterus     0000995
+53                                    Vagina     0000996
+54                               Whole Blood     0013756
+   X..RNASeq.and.Genotyped.samples X..RNASeq.Samples
+1                              581               663
+2                              469               541
+3                              233               258
+4                              387               432
+5                              213               240
+6                              584               663
+7                               21                21
+8                              129               152
+9                              147               176
+10                             194               246
+11                             175               215
+12                             209               241
+13                             205               255
+14                             175               209
+15                             165               197
+16                             170               202
+17                             202               246
+18                             170               205
+19                             126               159
+20                             114               139
+21                             396               459
+22                             483               504
+23                             147               174
+24                               9                 9
+25                              10                10
+26                             318               373
+27                             368               406
+28                             330               375
+29                             497               555
+30                             465               515
+31                               8                 9
+32                             372               429
+33                             386               432
+34                              73                85
+35                               4                 4
+36                             208               226
+37                             515               578
+38                             144               162
+39                             706               803
+40                             532               619
+41                             167               180
+42                             305               328
+43                             237               283
+44                             221               245
+45                             517               604
+46                             605               701
+47                             174               187
+48                             227               241
+49                             324               359
+50                             322               361
+51                             574               653
+52                             129               142
+53                             141               156
+54                             670               755
+> 
+> table(names(t1) == t0$Tissue)
+
+TRUE 
+  54 
+> table(t1 - t0$X..RNASeq.and.Genotyped.samples)
+
+ 0 
+54 
+> 
+> # ------------------------------------------------------------------------
+> # check the tissues for one sample
+> # ------------------------------------------------------------------------
+> 
+> sams4RNA = strsplit(sams$SAMPID, split="-")
+> sams4RNA = sapply(sams4RNA, function(v){paste(v[1:2], collapse='-')})
+> sams$sams4RNA = sams4RNA
+> 
+> sams$SMTSD[which(sams4RNA == 'GTEX-1117F')]
+ [1] "Adipose - Subcutaneous"              "Muscle - Skeletal"                  
+ [3] "Artery - Tibial"                     "Artery - Coronary"                  
+ [5] "Heart - Atrial Appendage"            "Adipose - Visceral (Omentum)"       
+ [7] "Uterus"                              "Vagina"                             
+ [9] "Breast - Mammary Tissue"             "Skin - Not Sun Exposed (Suprapubic)"
+[11] "Minor Salivary Gland"                "Brain - Cortex"                     
+> 
+> # ------------------------------------------------------------------------
+> # compare with the sample list from GTEx files from google storage (gs)
+> # https://anvil.terra.bio/#workspaces/anvil-datastorage/AnVIL_GTEx_V8_hg38/data
+> # in the tab of TABLES, with 979 participants and 17382 samples. 
+> # ------------------------------------------------------------------------
+> 
+> sams_gs = fread("../data/sample.tsv")
+> dim(sams_gs)
+[1] 17382     6
+> sams_gs[1:2,]
+           entity:sample_id
+1: GTEX-1117F-0226-SM-5GZZ7
+2: GTEX-1117F-0426-SM-5EGHI
+                                                                                                                                                             bam_file
+1: gs://fc-secure-ff8156a3-ddf3-42e4-9211-0fd89da62108/GTEx_Analysis_2017-06-05_v8_RNAseq_BAM_files/GTEX-1117F-0226-SM-5GZZ7.Aligned.sortedByCoord.out.patched.md.bam
+2: gs://fc-secure-ff8156a3-ddf3-42e4-9211-0fd89da62108/GTEx_Analysis_2017-06-05_v8_RNAseq_BAM_files/GTEX-1117F-0426-SM-5EGHI.Aligned.sortedByCoord.out.patched.md.bam
+                                                                                                                                                                bam_index
+1: gs://fc-secure-ff8156a3-ddf3-42e4-9211-0fd89da62108/GTEx_Analysis_2017-06-05_v8_RNAseq_BAM_files/GTEX-1117F-0226-SM-5GZZ7.Aligned.sortedByCoord.out.patched.md.bam.bai
+2: gs://fc-secure-ff8156a3-ddf3-42e4-9211-0fd89da62108/GTEx_Analysis_2017-06-05_v8_RNAseq_BAM_files/GTEX-1117F-0426-SM-5EGHI.Aligned.sortedByCoord.out.patched.md.bam.bai
+   participant            tissue_id     tissue_site_detail
+1:  GTEX-1117F Adipose_Subcutaneous Adipose - Subcutaneous
+2:  GTEX-1117F      Muscle_Skeletal      Muscle - Skeletal
+> 
+> table(sams$SAMPID %in% sams_gs$`entity:sample_id`)
+
+ TRUE 
+15253 
+> sams_gs = sams_gs[match(sams$SAMPID, sams_gs$`entity:sample_id`),]
+> table(sams$SAMPID == sams_gs$`entity:sample_id`)
+
+ TRUE 
+15253 
+> 
+> table(sams$SMTSD == sams_gs$tissue_site_detail)
+
+ TRUE 
+15253 
+> 
+> # ------------------------------------------------------------------------
+> # generate list of bam files and bai files
+> # ------------------------------------------------------------------------
+> 
+> table(t1 > 300)
+
+FALSE  TRUE 
+   31    23 
+> table(t1 > 250)
+
+FALSE  TRUE 
+   31    23 
+> table(t1 > 200)
+
+FALSE  TRUE 
+   22    32 
+> table(t1 > 100)
+
+FALSE  TRUE 
+    6    48 
+> 
+> tissue2use = names(t1)[t1 > 300]
+> tissue_ids = gsub(" - ", "_", tissue2use, fixed = TRUE)
+> tissue_ids = gsub(" (", "_", tissue_ids, fixed = TRUE)
+> tissue_ids = gsub(")", "", tissue_ids,   fixed = TRUE)
+> tissue_ids = gsub(" ", "_", tissue_ids,  fixed = TRUE)
+> 
+> tissue_ids
+ [1] "Adipose_Subcutaneous"                "Adipose_Visceral_Omentum"           
+ [3] "Artery_Aorta"                        "Artery_Tibial"                      
+ [5] "Breast_Mammary_Tissue"               "Cells_Cultured_fibroblasts"         
+ [7] "Colon_Sigmoid"                       "Colon_Transverse"                   
+ [9] "Esophagus_Gastroesophageal_Junction" "Esophagus_Mucosa"                   
+[11] "Esophagus_Muscularis"                "Heart_Atrial_Appendage"             
+[13] "Heart_Left_Ventricle"                "Lung"                               
+[15] "Muscle_Skeletal"                     "Nerve_Tibial"                       
+[17] "Pancreas"                            "Skin_Not_Sun_Exposed_Suprapubic"    
+[19] "Skin_Sun_Exposed_Lower_leg"          "Stomach"                            
+[21] "Testis"                              "Thyroid"                            
+[23] "Whole_Blood"                        
+> 
+> for(k in 1:length(tissue2use)){
++   tissue.k  = tissue2use[k]
++   tissue.id = tissue_ids[k]
++   w2kp      = which(sams_gs$tissue_site_detail==tissue.k)
++   bam_files = sams_gs$bam_file[w2kp]
++   bai_files = sams_gs$bam_index[w2kp]
++   
++   geno_dir = "gs://fc-secure-06f8c803-9dbf-48b5-a7d1-676b4867e9fb/byindnid_chr/"
++   geno_files = paste0(geno_dir, sams_gs$participant[w2kp], ".txt")
++   
++   cat(bam_files, file=paste0("../list/", tissue.id, "_bams.list"), sep="\n")
++   cat(bai_files, file=paste0("../list/", tissue.id, "_bais.list"), sep="\n")
++   cat(geno_files, file=paste0("../list/", tissue.id, "_hetSNP.list"), sep="\n")
++ }
+> 
+> sessionInfo()
+R version 3.5.2 (2018-12-20)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS  10.15.2
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] data.table_1.12.2
+
+loaded via a namespace (and not attached):
+[1] compiler_3.5.2
+> q(save="no")
+> proc.time()
+   user  system elapsed 
+  4.828   0.544   1.152 

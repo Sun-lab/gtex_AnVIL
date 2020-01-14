@@ -1,47 +1,65 @@
-workflow collect_TReC {
+workflow collect_TReC_ASReC {
     Int disk_size
     String memory_size
     Int preemptible
 
-    call TReC {
-        input:
-        disk_size = disk_size, 
-        memory_size = memory_size, 
-        preemptible = preemptible
+    Array[File] bam_files
+    Array[File] bam_indices
+    Array[File] het_snp_files
+    File gene_anno
+
+    Array[Int] indices = range(length(bam_files))
+    
+    scatter (i in indices) {
+
+        call TReC_ASReC {
+            input:
+            disk_size   = disk_size, 
+            memory_size = memory_size, 
+            preemptible = preemptible,
+            file_bam    = bam_files[i],
+            file_bai    = bam_indices[i],
+            file_hetSNP = het_snp_files[i],
+            gene_anno   = gene_anno
+        }
     }
     
     output {
-        File trec_file = TReC.output_trec
+        Array[File] cts_file = TReC_ASReC.output_cts
     }
 }
 
-task TReC {
-    File input_bam
-    File bamIndex
-    File gene_anno
-    String input_bam_name
-    String gene_anno_file_name
-
+task TReC_ASReC {
     Int disk_size
     String memory_size
     Int preemptible
 
+    File file_bam
+    File file_bai
+    File file_hetSNP
+    File gene_anno
+
+    String sam_name = sub(basename(file_hetSNP), "\\.txt", "")
+    
     command {
-        # Rscript --vanilla /get_TReC.R ${input_bam}
-        Rscript -e "library(GenomicAlignments); library(GenomicFeatures); library(Rsamtools); genes = readRDS('${gene_anno_file_name}'); bamfile = BamFileList('${input_bam_name}', yieldSize=1000000); se = summarizeOverlaps(features=genes, reads=bamfile, singleEnd=FALSE, ignore.strand=TRUE, fragments=TRUE); as1 = as.data.frame(assay(se)); write.table(as1, file = paste0('${input_bam_name}', '_TReC.txt'));"
+        Rscript --vanilla /get_TReC.R ${file_bam} ${gene_anno} ${sam_name} ${file_hetSNP} 
     }
     
     output {
-        File output_trec = "${input_bam_name}.trec.txt"
+        File output_cts = "${sam_name}.trecase.txt"
     }
     
     runtime {
         continueOnReturnCode: false
-        docker: "bioconductor/bioconductor_trecase:0.1"
+        docker: "sunway1999/bioconductor_trecase:0.1"
         memory: memory_size
-        cpu: "1"
+        cpu: "3"
         disks: "local-disk " + disk_size + " HDD"
         preemptible: preemptible 
+    }
+
+    meta {
+        author: "Wei Sun"
     }
 
 }
