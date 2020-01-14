@@ -75,13 +75,14 @@ part = part[which(part$SUBJID %in% dat$SUBJID),]
 dat = smart_merge(dat,part)
 dim(dat); dat[1:2,]
 
-## Subset subjects with both rnaseq and genotype
+## Subset subjects with both rnaseq and genotype and output
 sort(names(dat))
 smart_table(dat$SEX_NUM,dat$sex)
 smart_table(dat[,c("has_genotype","has_rnaseq")])
 dat = dat[which(dat$has_genotype & dat$has_rnaseq),]
 dim(dat)
-
+out_fn = file.path(data_dir,sprintf("dat_%s.tsv",tissue))
+write.table(dat,out_fn,sep = "\t",row.names = FALSE)
 
 
 q("no")
