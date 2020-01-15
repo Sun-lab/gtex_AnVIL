@@ -1,6 +1,7 @@
 # modified version of github repo file under broadinstitute/gtex-pipeline/genotype/participant_vcfs.wdl
+# We want to extract all SNPs for eQTL mapping and subset hetero SNPs for ASReC
 
-task get_hetSNPs {
+task get_SNPs {
 
     File vcf_file
     String SUBJID
@@ -17,7 +18,7 @@ task get_hetSNPs {
         set -euo pipefail
         date +"[%b %d %H:%M:%S] Generating participant VCF (SNPs only)"
         # select SNPs, filter out missing sites
-        bcftools view --no-update -s ${SUBJID} -v snps ${vcf_file} | bcftools view --no-update -e 'GT=".|."' -Oz -o ${participant_id}.snps.vcf.gz
+        bcftools view --no-update -s ${SUBJID} -v snps ${vcf_file} | bcftools view --no-update -e 'GT=".|."' -Oz -o ${SUBJID}.snps.vcf.gz
         tabix ${SUBJID}.snps.vcf.gz
 
         date +"[%b %d %H:%M:%S] Subsetting het sites for ASE"
@@ -48,6 +49,6 @@ task get_hetSNPs {
 }
 
 
-workflow get_hetSNPs_workflow {
-    call get_hetSNPs
+workflow get_SNPs_workflow {
+    call get_SNPs
 }
