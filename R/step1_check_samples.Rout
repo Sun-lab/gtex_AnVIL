@@ -589,7 +589,7 @@ FALSE  TRUE
 > for(k in 1:length(tissue2use)){
 +   tissue.id = tissue_ids[k]
 +   bam.list  = paste0(gs_path, tissue.id, "_bams.list")
-+   bai.list  = paste0(gs_path, tissue.id, "_bams.list")
++   bai.list  = paste0(gs_path, tissue.id, "_bais.list")
 +   geno.list = paste0(gs_path, tissue.id, "_hetSNP.list")
 +   tb = rbind(tb, c(tissue.id, bam.list, bai.list, geno.list))
 + }
@@ -625,4 +625,4 @@ loaded via a namespace (and not attached):
 > q(save="no")
 > proc.time()
    user  system elapsed 
-  4.367   0.419   1.114 
+  4.370   0.409   1.119 

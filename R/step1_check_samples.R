@@ -189,7 +189,7 @@ gs_path = "gs://fc-secure-06f8c803-9dbf-48b5-a7d1-676b4867e9fb/list2/"
 for(k in 1:length(tissue2use)){
   tissue.id = tissue_ids[k]
   bam.list  = paste0(gs_path, tissue.id, "_bams.list")
-  bai.list  = paste0(gs_path, tissue.id, "_bams.list")
+  bai.list  = paste0(gs_path, tissue.id, "_bais.list")
   geno.list = paste0(gs_path, tissue.id, "_hetSNP.list")
   tb = rbind(tb, c(tissue.id, bam.list, bai.list, geno.list))
 }
