@@ -125,8 +125,6 @@ cts = cbind(ct, ct1, ct2)
 dim(cts)
 cts[1:2,]
 
-cts = ct
-
 write.table(cts, file = sprintf("%s.trecase.txt", sam_name), 
             quote = FALSE, sep = "\t", eol = "\n")
 

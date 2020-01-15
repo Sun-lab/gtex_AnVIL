@@ -11,5 +11,5 @@ COPY asSeq_0.99.501.tar.gz .
 
 RUN R -e 'install.packages("asSeq_0.99.501.tar.gz", repos = NULL, type = "source")'
 
-ADD ./get_TReC.R get_TReC.R
+ADD ./get_TReC_ASReC.R get_TReC_ASReC.R
 

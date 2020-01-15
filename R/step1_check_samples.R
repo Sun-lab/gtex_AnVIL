@@ -44,7 +44,7 @@ hetSNPs[1:5]
 setequal(sams4WGS, hetSNPs)
 
 # ------------------------------------------------------------------------
-# The samples with RNA-seq data
+# The samples with RNA-seq data, only keep thos with WGS data
 # ------------------------------------------------------------------------
 
 sams = sams[which(sams$SMAFRZE == "RNASEQ"),]
@@ -59,7 +59,7 @@ sams = sams[which(sams4RNA %in% sams4WGS),]
 dim(sams)
 
 t1 = table(sams$SMTSD)
-t1
+sort(t1, decreasing = TRUE)
 
 # ------------------------------------------------------------------------
 # compare with the summary table from GTEx portal
@@ -67,7 +67,7 @@ t1
 
 t0 = read.csv("../data/GTEx_Portal.csv", as.is=TRUE)
 dim(t0)
-t0
+sort(t1, decreasing = TRUE)[1:5]
 
 table(names(t1) == t0$Tissue)
 table(t1 - t0$X..RNASeq.and.Genotyped.samples)
@@ -99,13 +99,17 @@ table(sams$SAMPID == sams_gs$`entity:sample_id`)
 table(sams$SMTSD == sams_gs$tissue_site_detail)
 
 # ------------------------------------------------------------------------
-# generate list of bam files and bai files
+# check sample size per tissue
 # ------------------------------------------------------------------------
 
 table(t1 > 300)
-table(t1 > 250)
 table(t1 > 200)
 table(t1 > 100)
+table(t1 > 70)
+
+# ------------------------------------------------------------------------
+# generate list of bam files and bai files for tissues with n > 300
+# ------------------------------------------------------------------------
 
 tissue2use = names(t1)[t1 > 300]
 tissue_ids = gsub(" - ", "_", tissue2use, fixed = TRUE)
@@ -125,10 +129,77 @@ for(k in 1:length(tissue2use)){
   geno_dir = "gs://fc-secure-06f8c803-9dbf-48b5-a7d1-676b4867e9fb/byindnid_chr/"
   geno_files = paste0(geno_dir, sams_gs$participant[w2kp], ".txt")
   
-  cat(bam_files, file=paste0("../list/", tissue.id, "_bams.list"), sep="\n")
-  cat(bai_files, file=paste0("../list/", tissue.id, "_bais.list"), sep="\n")
-  cat(geno_files, file=paste0("../list/", tissue.id, "_hetSNP.list"), sep="\n")
+  path = "../../gtex_AnVIL_data/list/"
+  cat(bam_files, file=paste0(path, tissue.id, "_bams.list"), sep="\n")
+  cat(bai_files, file=paste0(path, tissue.id, "_bais.list"), sep="\n")
+  cat(geno_files, file=paste0(path, tissue.id, "_hetSNP.list"), sep="\n")
 }
+
+# ------------------------------------------------------------------------
+# generate table of samples (here sample correspond to tissues)
+# ------------------------------------------------------------------------
+
+tb = NULL
+
+gs_path = "gs://fc-secure-06f8c803-9dbf-48b5-a7d1-676b4867e9fb/list/"
+
+for(k in 1:length(tissue2use)){
+  tissue.id = tissue_ids[k]
+  bam.list  = paste0(gs_path, tissue.id, "_bams.list")
+  bai.list  = paste0(gs_path, tissue.id, "_bais.list")
+  geno.list = paste0(gs_path, tissue.id, "_hetSNP.list")
+  tb = rbind(tb, c(tissue.id, bam.list, bai.list, geno.list))
+}
+
+
+# ------------------------------------------------------------------------
+# generate list of bam, bai, and hetSNP files for tissues with n \in [70,300]
+# ------------------------------------------------------------------------
+
+tissue2use = names(t1)[which(t1 >= 70 & t1 <= 300)]
+tissue_ids = gsub("\\s*-\\s*", "_", tissue2use)
+tissue_ids = gsub(" (", "_", tissue_ids, fixed = TRUE)
+tissue_ids = gsub(")", "", tissue_ids,   fixed = TRUE)
+tissue_ids = gsub(" ", "_", tissue_ids,  fixed = TRUE)
+
+tissue_ids
+
+for(k in 1:length(tissue2use)){
+  tissue.k  = tissue2use[k]
+  tissue.id = tissue_ids[k]
+  w2kp      = which(sams_gs$tissue_site_detail==tissue.k)
+  bam_files = sams_gs$bam_file[w2kp]
+  bai_files = sams_gs$bam_index[w2kp]
+  
+  geno_dir = "gs://fc-secure-06f8c803-9dbf-48b5-a7d1-676b4867e9fb/byindnid_chr/"
+  geno_files = paste0(geno_dir, sams_gs$participant[w2kp], ".txt")
+  
+  path = "../../gtex_AnVIL_data/list2/"
+  cat(bam_files, file=paste0(path, tissue.id, "_bams.list"), sep="\n")
+  cat(bai_files, file=paste0(path, tissue.id, "_bais.list"), sep="\n")
+  cat(geno_files, file=paste0(path, tissue.id, "_hetSNP.list"), sep="\n")
+}
+
+# ------------------------------------------------------------------------
+# generate table of samples (here sample correspond to tissues)
+# ------------------------------------------------------------------------
+
+gs_path = "gs://fc-secure-06f8c803-9dbf-48b5-a7d1-676b4867e9fb/list2/"
+
+for(k in 1:length(tissue2use)){
+  tissue.id = tissue_ids[k]
+  bam.list  = paste0(gs_path, tissue.id, "_bams.list")
+  bai.list  = paste0(gs_path, tissue.id, "_bams.list")
+  geno.list = paste0(gs_path, tissue.id, "_hetSNP.list")
+  tb = rbind(tb, c(tissue.id, bam.list, bai.list, geno.list))
+}
+
+dim(tb)
+colnames(tb) = c("entity:sample_id", "bam_files", "bai_files", "hetSNP_files")
+
+write.table(tb, file = "../data/data_table.txt", quote = FALSE, sep = "\t",
+            row.names = FALSE, col.names = TRUE)
+
 
 sessionInfo()
 q(save="no")
