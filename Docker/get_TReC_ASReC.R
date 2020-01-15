@@ -15,11 +15,11 @@ if (length(args)!=4) {
   het_snp_file   = args[4]
 }
 
+# setwd("~/research/GitHub/gtex_AnVIL_data/Docker_testing")
 # tag = "GTEx_Analysis_2017-06-05_v8_RNAseq_BAM_files_"
 # sam_name = "GTEX-1117F-0426-SM-5EGHI"
 # 
 # bam_file = paste0(tag, sam_name, ".Aligned.sortedByCoord.out.patched.md.bam")
-# bam_file = paste0("~/research/data/_GTEx/v8/RNAseq/", bam_file)
 # 
 # gene_anno_file = "exon_by_genes_gencode.v26.GRCh38.rds"
 # gene_anno_file = paste0("~/research/data/_GTEx/v8/Reference/", gene_anno_file)
@@ -91,7 +91,8 @@ print("done with sortBam!")
 # ------------------------------------------------------------------------
 
 date()
-extractAsReads(input=paste0(bam_fS, ".bam"), snpList=het_snp_file)
+extractAsReads(input=paste0(bam_fS, ".bam"), snpList=het_snp_file,
+               min.avgQ=20,  min.snpQ=20)
 date()
 
 print("done with extractAsReads!")
@@ -108,10 +109,15 @@ se2 = summarizeOverlaps(features=genes, reads=paste0(bam_fS, "_hap2.bam"),
                         mode="Union", singleEnd=FALSE, ignore.strand=TRUE,
                         fragments=TRUE)
 
+seN = summarizeOverlaps(features=genes, reads=paste0(bam_fS, "_hapN.bam"),
+                        mode="Union", singleEnd=FALSE, ignore.strand=TRUE,
+                        fragments=TRUE)
+
 print("done with ASReC!")
 
 ct1 = as.data.frame(assay(se1))
 ct2 = as.data.frame(assay(se2))
+ctN = as.data.frame(assay(seN))
 
 if(! all(rownames(ct) == rownames(ct1))){
   stop("rownames of ct and ct1 do not match\n")
@@ -121,7 +127,11 @@ if(! all(rownames(ct1) == rownames(ct2))){
   stop("rownames of ct1 and ct2 do not match\n")
 }
 
-cts = cbind(ct, ct1, ct2)
+if(! all(rownames(ct1) == rownames(ctN))){
+  stop("rownames of ct1 and ctN do not match\n")
+}
+
+cts = cbind(ct, ct1, ct2, ctN)
 dim(cts)
 cts[1:2,]
 
