@@ -57,6 +57,7 @@ task TReC_ASReC {
     
     command {
         Rscript --vanilla /get_TReC_ASReC.R ${file_bam} ${gene_anno} ${sam_name} ${file_hetSNP} 
+        # Rscript -e "cat(1:10, file='${sam_name}.trecase.txt', sep='\n')"
     }
     
     output {
@@ -89,7 +90,8 @@ task move_file {
     command {
         mkdir ${tissue}
         for file1 in ${sep=' ' cts_files}; do
-            mv $file1 ${tissue}/${tissue}_${file1}
+            fnm=$(basename $file1)
+            mv $file1 ${tissue}/${tissue}_$fnm
         done
     }
     
