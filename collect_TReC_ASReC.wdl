@@ -89,7 +89,7 @@ task move_file {
     command {
         mkdir ${tissue}
         for file1 in ${sep=' ' cts_files}; do
-            mv $file1 ${tissue}
+            mv $file1 ${tissue}/${tissue}_${file1}
         done
     }
     
