@@ -1,2 +1,2 @@
-entity:sample_id	bam_files	bai_files	hetSNP_files
-Whole_Blood_test	Whole_Blood_bais_test.list	Whole_Blood_bams_test.list	Whole_Blood_hetSNP_test.list
+entity:sample_test_id	bam_files	bai_files	hetSNP_files
+Whole_Blood_test	gs://fc-secure-06f8c803-9dbf-48b5-a7d1-676b4867e9fb/Whole_Blood_bams_test.list	gs://fc-secure-06f8c803-9dbf-48b5-a7d1-676b4867e9fb/Whole_Blood_bais_test.list	gs://fc-secure-06f8c803-9dbf-48b5-a7d1-676b4867e9fb/Whole_Blood_hetSNP_test.list

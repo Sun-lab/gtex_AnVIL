@@ -81,7 +81,7 @@ print("done with TReC!")
 # ------------------------------------------------------------------------
 
 date()
-sortBam(bam_filtered, bam_fS, byQname=TRUE, maxMemory=16384)
+sortBam(bam_filtered, bam_fS, byQname=TRUE, maxMemory=3500)
 date()
 
 print("done with sortBam!")
