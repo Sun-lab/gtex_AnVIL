@@ -5,7 +5,7 @@ A workflow to process GTEx bam files stored at NHGRI AnVIL (Genomic Data Science
 This repository includes the workflow and docker configuration file . 
 
 ## Docker image 
-The docker image is available as "sunway1999/bioconductor_trecase:0.1" from DockerHub. The image was built based on R/bioconductor (RELEASE_3_10), with addition of asSeq R package (asSeq_0.99.501.tar.gz) together with an R script [get_TReC_ASReC.R](Docker/get_TReC_ASReC.R) that extracts both total read/fragment count (TReC) and allele-specific read/fragment count (ASReC) data from bam files. 
+The docker image is available as `sunway1999/bioconductor_trecase:0.1` from [DockerHub](https://hub.docker.com/). The image was built based on R/bioconductor (RELEASE_3_10), with addition of asSeq R package (asSeq_0.99.501.tar.gz) together with an R script [get_TReC_ASReC.R](Docker/get_TReC_ASReC.R) that extracts both total read/fragment count (TReC) and allele-specific read/fragment count (ASReC) data from bam files. 
 
 The docker configuration file [Dockerfile](Docker/Dockerfile) and the command to build the docker image [build_docker.sh](Docker/build_docker.sh) are saved in the folder Docker. 
 
