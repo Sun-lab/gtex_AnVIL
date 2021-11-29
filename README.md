@@ -1,13 +1,13 @@
 # gtex_AnVIL
 
-A workflow to process GTEx bam files at AnVIL cloud space to obtain Total Read Count and Allele-specific read count per gene. 
+A workflow to process GTEx bam files stored at NHGRI AnVIL (Genomic Data Science Analysis, Visualization, and Informatics Lab-space, https://anvil.terra.bio/) cloud space to obtain Total Read Count and Allele-specific read count per gene. 
 
-This repository include the workflow and docker file to process raw RNA-seq data from NHGRI AnVIL (Genomic Data Science Analysis, Visualization, and Informatics Lab-space, https://anvil.terra.bio/). 
+This repository includes the workflow and docker configuration file . 
 
 ## Docker image 
 The docker image is available as "sunway1999/bioconductor_trecase:0.1" from DockerHub. The image was built based on R/bioconductor (RELEASE_3_10), with addition of asSeq R package (asSeq_0.99.501.tar.gz) together with an R script [get_TReC_ASReC.R](Docker/get_TReC_ASReC.R) that extracts both total read/fragment count (TReC) and allele-specific read/fragment count (ASReC) data. 
 
-The docker configuration file [Dockerfile](Docker/Dockerfile) and the command to build the docker image [build_docker.sh](Docker/build_docker.sh) are saved in the folder Docker. The content of the docker image is relatively simple. It inherits a docker instance of R bioconductor, installs a few R packages from bioconductor, and our R package asSeq. Then add an R script [get_TReC_ASReC.R](Docker/get_TReC_ASReC.R).
+The docker configuration file [Dockerfile](Docker/Dockerfile) and the command to build the docker image [build_docker.sh](Docker/build_docker.sh) are saved in the folder Docker. 
 
 ## Workflow 
 The workflow [collect_TReC_ASReC.wdl](collect_TReC_ASReC.wdl) is written by Workflow Description Language (WDL), which specifies data processing workflows with a human-readable and writeable syntax. A WDL script chains several tasks to accomplish specific goals. Here our workflow is designed to run on google cloud environment through the AnVIL interface, and it has two tasks. One is to run the R script get_TReC_ASReC.R, and the other one is to move the output file to a specified location. 
