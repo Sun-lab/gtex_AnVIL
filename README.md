@@ -17,13 +17,22 @@ The key part of the workflow is [get_TReC_ASReC.R](Docker/get_TReC_ASReC.R), whi
 1. the name of a bam file from which to collect count information
 2. the name of a gene annotation file. For example, file [exon_by_genes_gencode.v26.GRCh38.rds](_prepare_gene_anno/exon_by_genes_gencode.v26.GRCh38.rds), which is produced by a short script [step0_build_TxDb_local.R](_prepare_gene_anno/step0_build_TxDb_local.R).
 3. sam_name, e.g., something like "GTEX-1117F-0426-SM-5EGHI".
-4. the name of a text file for the list of heterozygous SNPs, e.g., "GTEX-1117F.txt".
+4. the name of a text file for the list of heterozygous SNPs for one sample, e.g., "GTEX-1117F.txt". The content of this file looks like the following, without header, with four columns: chromosome, position, and two alleles on haplotype 1 and 2, respectively. 
+```
+chr1	777	G	T
+chr1	999	A	G
+ ```
+We collect these lists of heterzygous SNPs using phased genotype data from file: GTEx_Analysis_2017-06-05_v8_WholeGenomeSeq_838Indiv_Analysis_Freeze.SHAPEIT2_phased, which is available from the `AnVIL_GTEx_V8_hg38` workspace in https://anvil.terra.bio/.
+
+
+## Running this workflow in a other environments.
  
+In a local environment, there is no need to move file and one can simply run the R script [get_TReC_ASReC.R](Docker/get_TReC_ASReC.R), for example, using the code like the following 
+```
+Rscript --vanilla get_TReC_ASReC.R sample1.bam exon_by_genes_gencode.v26.GRCh38.rds sample1 sample1_hetSNP.txt
+```
 
-### get_TReC_ASReC.R
-
-## Running this workflow in a local environment. 
-Since this workflow 
+The functions that we use from R bioconductor include `scanBamFlag` to filter bam files and `summarizeOverlaps` to obtain read/fragment counts. These functions should not vary in more recent release. If it is desirable to run the analysis using the exact version of R environment, one use a wdl similar to [get_TReC_ASReC.R](Docker/get_TReC_ASReC.R), which used docker image: "sunway1999/bioconductor_trecase:0.1". Outside AnVIL, an wdl script can be run by [Cromwell](https://cromwell.readthedocs.io/en/stable/tutorials/FiveMinuteIntro/), an execution engine supporting three types of platforms: local machine, a local cluster, or a cloud platform. For example, by a command  `java -jar ~/cromwell/cromwell-71.jar run my.wdl -i my.json` with input arguments specified by `my.json`.
 
 
 
