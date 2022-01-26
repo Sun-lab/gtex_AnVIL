@@ -34,5 +34,8 @@ Rscript --vanilla get_TReC_ASReC.R sample1.bam exon_by_genes_gencode.v26.GRCh38.
 
 The functions that we use from R bioconductor include `scanBamFlag` to filter bam files and `summarizeOverlaps` to obtain read/fragment counts. These functions should not vary in more recent R bioconductor releases. If it is desirable to run the analysis using the exact version of R environment we used, one can use a wdl script similar to [get_TReC_ASReC.R](Docker/get_TReC_ASReC.R), which uses the docker image: "sunway1999/bioconductor_trecase:0.1" from DockerHub. Outside AnVIL, an wdl script can be run by [Cromwell](https://cromwell.readthedocs.io/en/stable/tutorials/FiveMinuteIntro/), an execution engine supporting three types of platforms: local machine, a local cluster, or a cloud platform. For example, by a command  `java -jar ~/cromwell/cromwell-71.jar run my.wdl -i my.json` with input arguments specified by `my.json`.
 
+We have inlcuded some sample data (bam files and SNP genotype data for two genes in 25 samples of 1000 Genome Project) in https://github.com/Sun-lab/asSeq_pipelines/tree/main/pipeline_1KGP/data, as well as a sample R code [test_scr.R](https://github.com/Sun-lab/asSeq_pipelines/blob/main/pipeline_1KGP/test_scr.R) to iterately all function ```get_TReC_ASReC.R``` to calculate counts from those bam files. 
+
+
 
 
